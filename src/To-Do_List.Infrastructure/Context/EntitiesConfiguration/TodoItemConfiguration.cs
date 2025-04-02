@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using To_Do_List.Core.Domain.Entities;
-using TodoItem = To_Do_List.Core.Domain.Entities.TodoItem;
 
 namespace To_Do_List.Infrastructure.Persistence.Context.EntitiesConfiguration
 {
