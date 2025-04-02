@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\To-Do_List.Api.props" />
-</Project>
