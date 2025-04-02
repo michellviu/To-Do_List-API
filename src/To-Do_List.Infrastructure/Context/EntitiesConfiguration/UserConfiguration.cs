@@ -13,7 +13,7 @@ namespace To_Do_List.Infrastructure.Persistence.Context.EntitiesConfiguration
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.HasMany(u => u.Tasks)
+            builder.HasMany(u => u.TodoItems)
                    .WithOne(t => t.User)
                    .HasForeignKey(t => t.UserId);
         }

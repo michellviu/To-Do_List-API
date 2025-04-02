@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using To_Do_List.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Task = To_Do_List.Core.Domain.Entities.Task;
 using To_Do_List.Infrastructure.Persistence.Context.EntitiesConfiguration;
 
 namespace To_Do_List.Infrastructure.Persistence.Context
@@ -19,7 +18,7 @@ namespace To_Do_List.Infrastructure.Persistence.Context
         {
         }
 
-        public DbSet<Task> Tasks { get; set; }
+        public DbSet<TodoItem> TodoItems { get; set; }
         public DbSet<User> Users { get; set; }
 
 
@@ -28,7 +27,7 @@ namespace To_Do_List.Infrastructure.Persistence.Context
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new UserConfiguration());
-            modelBuilder.ApplyConfiguration(new TaskConfiguration());
+            modelBuilder.ApplyConfiguration(new TodoItemConfiguration());
 
         }
 

@@ -9,6 +9,6 @@ namespace To_Do_List.Core.Domain.Entities
 {
     public class User : IdentityUser<int>
     {
-        public ICollection<Task> Tasks { get; set; }
+        public ICollection<TodoItem> TodoItems { get; set; }
     }
 }

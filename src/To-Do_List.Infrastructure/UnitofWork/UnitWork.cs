@@ -12,13 +12,11 @@ namespace To_Do_List.Infrastructure.Persistence.UnitWork
     public class UnitWork : IUnitWork, IDisposable
     {
         private readonly AppDBContext _context;
-        public IUserRepository UserRepository { get; set; }
-        public ITaskRepository TaskRepository { get; set; }
+        public ITodoItemRepository TaskRepository { get; set; }
 
-        public UnitWork(AppDBContext context, IUserRepository userRepository, ITaskRepository taskRepository)
+        public UnitWork(AppDBContext context, ITodoItemRepository taskRepository)
         {
             _context = context;
-            UserRepository = userRepository;
             TaskRepository = taskRepository;
         }
 

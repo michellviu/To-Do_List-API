@@ -4,21 +4,21 @@ using System.Linq;
 using System.Text;
 using To_Do_List.Core.Domain.DTOs;
 using To_Do_List.Core.DomainService.Services;
-using Task = To_Do_List.Core.Domain.Entities.Task;
+using TodoItem = To_Do_List.Core.Domain.Entities.TodoItem;
 
 namespace To_Do_List.Infrastructure.Persistence.Mappers
 {
-    public class TaskMapper
+    public class TodoItemMapper
     {
-        private ITaskService _taskService;
-        public TaskMapper(ITaskService taskService)
+        private ITodoItemService _taskService;
+        public TodoItemMapper(ITodoItemService taskService)
         {
             _taskService = taskService;
         }
 
-        public static TaskDto ToDto(Task task)
+        public static TodoItemDto ToDto(TodoItem task)
         {
-            return new TaskDto
+            return new TodoItemDto
             {
                 Id = task.Id,
                 Title = task.Title,
@@ -29,9 +29,9 @@ namespace To_Do_List.Infrastructure.Persistence.Mappers
             };
         }
 
-        public static Task ToEntity(TaskDto taskDto)
+        public static TodoItem ToEntity(TodoItemDto taskDto)
         {
-            return new Task
+            return new TodoItem
             {
                 Id = taskDto.Id,
                 Title = taskDto.Title,

@@ -18,11 +18,10 @@ namespace To_Do_List.Infrastructure.Services
     {
         public static void AddApplicationServices(this IServiceCollection services)
         {
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<ITaskRepository, TaskRepository>();
+ 
+            services.AddScoped<ITodoItemRepository, TodoItemRepository>();
             services.AddScoped<UnitWork>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<ITaskService, TaskService>();
+            services.AddScoped<ITodoItemService, TodoItemService>();
             services.AddScoped<ITokenGenerator, TokenGenerator>();
         }
 

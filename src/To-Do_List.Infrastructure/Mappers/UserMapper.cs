@@ -11,11 +11,6 @@ namespace To_Do_List.Infrastructure.Persistence.Mappers
 {
     public class UserMapper
     {
-        private IUserService _userService;
-        public UserMapper(IUserService userService)
-        {
-            _userService = userService;
-        }
         public static UserDto ToDto(User user)
         {
             return new UserDto
@@ -27,14 +22,5 @@ namespace To_Do_List.Infrastructure.Persistence.Mappers
             };
         }
 
-        public async Task<User> ToEntity(UserDto userDto)
-        {
-            var user = await _userService.GetByIdAsync(userDto.Id);
-            if (user == null)
-            {
-                throw new Exception("Entity not found");
-            }
-            return user;
-        }
     }
 }

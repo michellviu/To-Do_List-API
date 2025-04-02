@@ -5,16 +5,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using To_Do_List.Core.Domain.Entities;
-using Task = To_Do_List.Core.Domain.Entities.Task;
+using TodoItem = To_Do_List.Core.Domain.Entities.TodoItem;
 
 namespace To_Do_List.Infrastructure.Persistence.Context.EntitiesConfiguration
 {
-    public class TaskConfiguration : IEntityTypeConfiguration<Task>
+    public class TodoItemConfiguration : IEntityTypeConfiguration<TodoItem>
     {
-        public void Configure(EntityTypeBuilder<Task> builder)
+        public void Configure(EntityTypeBuilder<TodoItem> builder)
         {
             builder.HasOne(t => t.User)
-                   .WithMany(u => u.Tasks)
+                   .WithMany(u => u.TodoItems)
                    .HasForeignKey(t => t.UserId);
 
 
