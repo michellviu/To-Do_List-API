@@ -28,10 +28,6 @@ internal class TodoItemService : ITodoItemService
     public async Task DeleteTodoItemAsync(int id)
     {
         var entity = await unitWork.TaskRepository.GetTodoItemByIdAsync(id);
-        if (entity == null)
-        {
-            throw new Exception("Entity not found");
-        }
         unitWork.TaskRepository.DeleteTodoItem(entity);
         await unitWork.SaveAsync();
     }
@@ -55,10 +51,6 @@ internal class TodoItemService : ITodoItemService
     public async Task UpdateTodoItemAsync(int id, TodoItem entity)
     {
         var entityToUpdate = await GetTodoItemByIdAsync(id);
-        if (entityToUpdate == null)
-        {
-            throw new Exception("Entity not found");
-        }
         entityToUpdate.Id = id;
         entityToUpdate.Title = entity.Title;
         entityToUpdate.Description = entity.Description;

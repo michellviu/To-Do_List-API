@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using To_Do_List.Core.Domain.DTOs;
 using To_Do_List.Core.DomainService.Services;
 using To_Do_List.Infrastructure.Persistence.Mappers;
+using System;
 
 namespace To_Do_List.Api.Controllers;
 
@@ -51,13 +52,21 @@ public class TaskController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
         var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value);
-        var taskentity = await _taskService.GetTodoItemByIdAsync(id);
-          if (taskentity.UserId != userId)
-            return Unauthorized();
-        var task = TodoItemMapper.ToEntity(taskDto, userId);
-        await _taskService.UpdateTodoItemAsync(id, task);
-        task.Id = id;
-        return Ok(TodoItemMapper.ToDto(task));
+        try
+        {
+            var taskentity = await _taskService.GetTodoItemByIdAsync(id);
+            if (taskentity.UserId != userId)
+                return Unauthorized();
+            var task = TodoItemMapper.ToEntity(taskDto, userId);
+            await _taskService.UpdateTodoItemAsync(id, task);
+            task.Id = id;
+            return Ok(TodoItemMapper.ToDto(task));
+
+        }
+        catch (NullReferenceException ex)
+        {
+            return NotFound("Entity no found.");
+        }
     }
 
 
@@ -68,13 +77,19 @@ public class TaskController : ControllerBase
     public async Task<IActionResult> DeleteTask(int id)
     {
         var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value);
-        var task = await _taskService.GetTodoItemByIdAsync(id);
-        if (task.UserId != userId)
-            return Unauthorized();
-        await _taskService.DeleteTodoItemAsync(id);
-        return NoContent();
+        try
+        {
+            var task = await _taskService.GetTodoItemByIdAsync(id);
+            if (task.UserId != userId)
+                return Unauthorized();
+            await _taskService.DeleteTodoItemAsync(id);
+            return NoContent();
+        }
+        catch (NullReferenceException ex)
+        {
+            return NotFound("Entity no found.");
+        }
     }
-
 }
 
 
