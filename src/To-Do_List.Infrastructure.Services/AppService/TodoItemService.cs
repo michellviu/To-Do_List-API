@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OneOf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,32 +26,40 @@ internal class TodoItemService : ITodoItemService
         await unitWork.SaveAsync();
     }
 
-    public async Task DeleteTodoItemAsync(int id)
+    public async Task<OneOf<TodoItem, string>> DeleteTodoItemAsync(int id)
     {
         var entity = await unitWork.TaskRepository.GetTodoItemByIdAsync(id);
+        if (entity == null)
+        {
+            return "TodoItem not found";
+        }
         unitWork.TaskRepository.DeleteTodoItem(entity);
         await unitWork.SaveAsync();
+        return entity;
     }
 
-    public async Task<IEnumerable<TodoItem>> GetAllTodoItemAsync()
+    public Task<IEnumerable<TodoItem>> GetAllTodoItemAsync()
     {
-        return await unitWork.TaskRepository.GetAllTodoItemAsync();
-
+        return unitWork.TaskRepository.GetAllTodoItemAsync();
     }
 
-    public async Task<IEnumerable<TodoItem>> GetAllTodoItemForUserAsync(int idUser)
+    public Task<IEnumerable<TodoItem>> GetAllTodoItemForUserAsync(int idUser)
     {
-        return await unitWork.TaskRepository.GetAllTodoItemForUserAsync(idUser);
+        return unitWork.TaskRepository.GetAllTodoItemForUserAsync(idUser);
     }
 
-    public async Task<TodoItem> GetTodoItemByIdAsync(int id)
+    public Task<TodoItem> GetTodoItemByIdAsync(int id)
     {
-        return await unitWork.TaskRepository.GetTodoItemByIdAsync(id);
+        return unitWork.TaskRepository.GetTodoItemByIdAsync(id);
     }
 
-    public async Task UpdateTodoItemAsync(int id, TodoItem entity)
+    public async Task<OneOf<TodoItem,string>> UpdateTodoItemAsync(int id, TodoItem entity)
     {
         var entityToUpdate = await GetTodoItemByIdAsync(id);
+        if (entityToUpdate == null)
+        {
+            return "TodoItem not found";
+        }
         entityToUpdate.Id = id;
         entityToUpdate.Title = entity.Title;
         entityToUpdate.Description = entity.Description;
@@ -59,6 +68,7 @@ internal class TodoItemService : ITodoItemService
 
         unitWork.TaskRepository.UpdateTodoItem(entityToUpdate);
         await unitWork.SaveAsync();
+        return entityToUpdate;
 
     }
 }

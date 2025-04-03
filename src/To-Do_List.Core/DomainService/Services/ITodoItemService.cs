@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OneOf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,8 +14,8 @@ public interface ITodoItemService
     Task<IEnumerable<TodoItem>> GetAllTodoItemForUserAsync(int idUser);
     Task<TodoItem> GetTodoItemByIdAsync(int id);
     Task AddTodoItemAsync(TodoItem entity);
-    Task UpdateTodoItemAsync(int id, TodoItem entity);
-    Task DeleteTodoItemAsync(int id);
+    Task<OneOf<TodoItem, string>> UpdateTodoItemAsync(int id, TodoItem entity);
+    Task<OneOf<TodoItem, string>> DeleteTodoItemAsync(int id);
 
 }
 
