@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace To_Do_List.Core.DomainService.UnitofWork
+namespace To_Do_List.Core.DomainService.UnitofWork;
+
+public interface IUnitWork : IDisposable
 {
-    public interface IUnitWork : IDisposable
-    {
-        Task SaveAsync();
-    }
+    Task SaveAsync();
 }
+

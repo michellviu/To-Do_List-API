@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace To_Do_List.Core.Domain.DTOs
+namespace To_Do_List.Core.Domain.DTOs;
+
+public class UserDto
 {
-    public class UserDto
-    {
-        public int Id { get; set; }
-        [Required]
-        public string UserName { get; set; }
-        [Required]
-        public string EmailAddress { get; set; }
-    }
+    public int Id { get; init; }
+    [Required]
+    public string UserName { get; init; }
+    [Required]
+    public string EmailAddress { get; init; }
 }
+

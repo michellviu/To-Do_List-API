@@ -9,27 +9,27 @@ using To_Do_List.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using To_Do_List.Infrastructure.Persistence.Context.EntitiesConfiguration;
 
-namespace To_Do_List.Infrastructure.Persistence.Context
+namespace To_Do_List.Infrastructure.Persistence.Context;
+
+public class AppDBContext : IdentityDbContext<User, IdentityRole<int>, int>
 {
-    public class AppDBContext : IdentityDbContext<User, IdentityRole<int>, int>
+    public AppDBContext(DbContextOptions<AppDBContext> options)
+    : base(options)
     {
-        public AppDBContext(DbContextOptions<AppDBContext> options)
-        : base(options)
-        {
-        }
+    }
 
-        public DbSet<TodoItem> TodoItems { get; set; }
-        public DbSet<User> Users { get; set; }
+    public DbSet<TodoItem> TodoItems { get; set; }
+    public DbSet<User> Users { get; set; }
 
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfiguration(new UserConfiguration());
-            modelBuilder.ApplyConfiguration(new TodoItemConfiguration());
-
-        }
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.ApplyConfiguration(new TodoItemConfiguration());
 
     }
+
 }
+

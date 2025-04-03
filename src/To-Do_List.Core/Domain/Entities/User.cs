@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace To_Do_List.Core.Domain.Entities
+namespace To_Do_List.Core.Domain.Entities;
+
+public class User : IdentityUser<int>
 {
-    public class User : IdentityUser<int>
-    {
-        public ICollection<TodoItem> TodoItems { get; set; }
-    }
+    public ICollection<TodoItem> TodoItems { get; set; }
 }
+

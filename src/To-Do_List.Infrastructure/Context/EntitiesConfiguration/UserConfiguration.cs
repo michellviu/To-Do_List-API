@@ -7,15 +7,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using To_Do_List.Core.Domain.Entities;
 
-namespace To_Do_List.Infrastructure.Persistence.Context.EntitiesConfiguration
+namespace To_Do_List.Infrastructure.Persistence.Context.EntitiesConfiguration;
+
+public class UserConfiguration : IEntityTypeConfiguration<User>
 {
-    public class UserConfiguration : IEntityTypeConfiguration<User>
+    public void Configure(EntityTypeBuilder<User> builder)
     {
-        public void Configure(EntityTypeBuilder<User> builder)
-        {
-            builder.HasMany(u => u.TodoItems)
-                   .WithOne(t => t.User)
-                   .HasForeignKey(t => t.UserId);
-        }
+        builder.HasMany(u => u.TodoItems)
+               .WithOne(t => t.User)
+               .HasForeignKey(t => t.UserId);
     }
 }
+
