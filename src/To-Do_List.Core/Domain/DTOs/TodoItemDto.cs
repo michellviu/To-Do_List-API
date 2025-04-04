@@ -6,16 +6,16 @@ using System.Text;
 using System.Threading.Tasks;
 using To_Do_List.Core.Domain.Entities;
 
-namespace To_Do_List.Core.Domain.DTOs
+namespace To_Do_List.Core.Domain.DTOs;
+
+public class TodoItemDto
 {
-    public class TodoItemDto
-    {
-        public int Id { get; set; }
-        [Required]
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public States State { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public DateTime LastUpdatedDate { get; set; }
-    }
+    public int Id { get; init; }
+    [Required]
+    public string Title { get; init; }
+    public string Description { get; init; }
+    public States State { get; init; }
+    public DateTime CreatedDate { get; init; }
+    public DateTime LastUpdatedDate { get; init; }
 }
+

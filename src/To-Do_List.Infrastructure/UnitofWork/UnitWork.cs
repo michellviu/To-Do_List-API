@@ -7,27 +7,27 @@ using To_Do_List.Core.DomainService.Repository;
 using To_Do_List.Core.DomainService.UnitofWork;
 using To_Do_List.Infrastructure.Persistence.Context;
 
-namespace To_Do_List.Infrastructure.Persistence.UnitWork
+namespace To_Do_List.Infrastructure.Persistence.UnitWork;
+
+public class UnitWork : IUnitWork, IDisposable
 {
-    public class UnitWork : IUnitWork, IDisposable
+    private readonly AppDBContext _context;
+    public ITodoItemRepository TaskRepository { get; set; }
+
+    public UnitWork(AppDBContext context, ITodoItemRepository taskRepository)
     {
-        private readonly AppDBContext _context;
-        public ITodoItemRepository TaskRepository { get; set; }
+        _context = context;
+        TaskRepository = taskRepository;
+    }
 
-        public UnitWork(AppDBContext context, ITodoItemRepository taskRepository)
-        {
-            _context = context;
-            TaskRepository = taskRepository;
-        }
+    public void Dispose()
+    {
+        _context.Dispose();
+    }
 
-        public void Dispose()
-        {
-            _context.Dispose();
-        }
-
-        public async Task SaveAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
+    public async Task SaveAsync()
+    {
+        await _context.SaveChangesAsync();
     }
 }
+

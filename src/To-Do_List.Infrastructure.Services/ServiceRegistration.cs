@@ -12,56 +12,56 @@ using To_Do_List.Infrastructure.Persistence.Repositories;
 using To_Do_List.Infrastructure.Persistence.UnitWork;
 using To_Do_List.Infrastructure.Services.AppService;
 
-namespace To_Do_List.Infrastructure.Services
+namespace To_Do_List.Infrastructure.Services;
+
+public static class ServiceRegistration
 {
-    public static class ServiceRegistration
+    public static void AddApplicationServices(this IServiceCollection services)
     {
-        public static void AddApplicationServices(this IServiceCollection services)
+
+        services.AddScoped<ITodoItemRepository, TodoItemRepository>();
+        services.AddScoped<UnitWork>();
+        services.AddScoped<ITodoItemService, TodoItemService>();
+        services.AddScoped<ITokenGenerator, TokenGenerator>();
+    }
+
+    public static void AddIdentityServices(this IServiceCollection services)
+    {
+        services.AddIdentity<User, IdentityRole<int>>(options =>
         {
- 
-            services.AddScoped<ITodoItemRepository, TodoItemRepository>();
-            services.AddScoped<UnitWork>();
-            services.AddScoped<ITodoItemService, TodoItemService>();
-            services.AddScoped<ITokenGenerator, TokenGenerator>();
-        }
+            options.Password.RequiredLength = 6;
+            options.Password.RequiredUniqueChars = 3;
+            options.Password.RequireNonAlphanumeric = false;
 
-        public static void AddIdentityServices(this IServiceCollection services)
+        })
+         .AddEntityFrameworkStores<AppDBContext>()
+         .AddDefaultTokenProviders();
+    }
+
+
+    public static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
+        var jwtSettings = configuration.GetSection("JwtSettings");
+        var key = Encoding.UTF8.GetBytes(jwtSettings["SigningKey"]);
+
+        services.AddAuthentication(options =>
         {
-            services.AddIdentity<User, IdentityRole<int>>(options =>
-            {
-                options.Password.RequiredLength = 6;
-                options.Password.RequiredUniqueChars = 3;
-                options.Password.RequireNonAlphanumeric = false;
-
-            })
-             .AddEntityFrameworkStores<AppDBContext>()
-             .AddDefaultTokenProviders();
-        }
-
-
-        public static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
         {
-            var jwtSettings = configuration.GetSection("JwtSettings");
-            var key = Encoding.UTF8.GetBytes(jwtSettings["SigningKey"]);
-
-            services.AddAuthentication(options =>
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtSettings["Issuer"],
-                    ValidAudience = jwtSettings["Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(key)
-                };
-            });
-        }
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtSettings["Issuer"],
+                ValidAudience = jwtSettings["Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(key)
+            };
+        });
     }
 }
+

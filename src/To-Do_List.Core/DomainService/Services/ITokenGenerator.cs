@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using To_Do_List.Core.Domain.Entities;
 
-namespace To_Do_List.Core.DomainService.Services
+namespace To_Do_List.Core.DomainService.Services;
+
+public interface ITokenGenerator
 {
-    public interface ITokenGenerator
-    {
-        string GenerateJwtTokenAsync(User user);
-    }
+    string GenerateJwtTokenAsync(User user);
 }
+
