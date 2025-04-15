@@ -13,32 +13,33 @@ public class TodoItemMapper
         _todoitemService = todoitemService;
     }
 
-    public static TodoItemDto ToDto(TodoItem task)
+    public static TodoItemResponseDto FromEntityToResponseDto(TodoItem task)
     {
-        return new TodoItemDto
+        return new TodoItemResponseDto
         {
             Id = task.Id,
             Title = task.Title,
             Description = task.Description,
-            State = task.State,
+            Status = task.Status,
             CreatedDate = task.CreatedDate,
-            LastUpdatedDate = task.LastUpdatedDate
+            LastUpdatedDate = task.LastUpdatedDate,
+            Difficulty = task.Difficulty
         };
     }
 
-    public static TodoItem ToEntity(TodoItemDto taskDto, int userId)
+    public static TodoItem FromRequestDtoToEntity(TodoItemRequestDto taskDto, int userId)
     {
+
         var task = new TodoItem
         {
             Id = taskDto.Id,
             Title = taskDto.Title,
             Description = taskDto.Description,
-            State = taskDto.State,
-            CreatedDate = taskDto.CreatedDate,
-            LastUpdatedDate = taskDto.LastUpdatedDate,
+            Status = taskDto.Status,
+            Difficulty = taskDto.Difficulty,
             UserId = userId
         };
-        return task;
+        return task; 
     }
 }
 

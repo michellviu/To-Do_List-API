@@ -9,7 +9,7 @@ namespace To_Do_List.Core.DomainService.Repository;
 public interface ITodoItemRepository
 {
     Task<IEnumerable<TodoItem>> GetAllTodoItemAsync();
-    Task<IEnumerable<TodoItem>> GetAllTodoItemForUserAsync(int idUser);
+    Task<(IEnumerable<TodoItem>,int)> GetPagedTodoItemForUserAsync(int idUser, int page, int pageSize);
     Task<TodoItem> GetTodoItemByIdAsync(int id);
     Task AddTodoItemAsync(TodoItem entity);
     void UpdateTodoItem(TodoItem entity);

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using To_Do_List.Core.Domain.Entities;
@@ -15,13 +16,12 @@ public class TodoItemConfiguration : IEntityTypeConfiguration<TodoItem>
         builder.HasOne(t => t.User)
                .WithMany(u => u.TodoItems)
                .HasForeignKey(t => t.UserId);
-
-
+        
+         
         builder.Property(t => t.Title).IsRequired();
-        builder.Property(t => t.State).IsRequired();
-        builder.Property(t => t.State)
-               .HasDefaultValue(States.Pendiente);
-
+        builder.Property(t => t.Status)
+               .HasDefaultValue(Status.Pendiente)
+               .IsRequired();
 
     }
 }

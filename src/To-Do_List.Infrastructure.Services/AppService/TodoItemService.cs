@@ -43,10 +43,11 @@ internal class TodoItemService : ITodoItemService
         return unitWork.TaskRepository.GetAllTodoItemAsync();
     }
 
-    public Task<IEnumerable<TodoItem>> GetAllTodoItemForUserAsync(int idUser)
+    public Task<(IEnumerable<TodoItem>,int)> GetPagedTodoItemForUserAsync(int idUser, int page, int pageSize)
     {
-        return unitWork.TaskRepository.GetAllTodoItemForUserAsync(idUser);
+        return unitWork.TaskRepository.GetPagedTodoItemForUserAsync(idUser, page, pageSize);
     }
+    
 
     public Task<TodoItem> GetTodoItemByIdAsync(int id)
     {
@@ -63,7 +64,8 @@ internal class TodoItemService : ITodoItemService
         entityToUpdate.Id = id;
         entityToUpdate.Title = entity.Title;
         entityToUpdate.Description = entity.Description;
-        entityToUpdate.State = entity.State;
+        entityToUpdate.Status = entity.Status;
+        entityToUpdate.Difficulty = entity.Difficulty;
         entityToUpdate.LastUpdatedDate = DateTime.Now;
 
         unitWork.TaskRepository.UpdateTodoItem(entityToUpdate);

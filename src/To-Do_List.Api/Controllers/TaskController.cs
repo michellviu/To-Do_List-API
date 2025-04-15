@@ -5,6 +5,8 @@ using To_Do_List.Core.DomainService.Services;
 using To_Do_List.Infrastructure.Persistence.Mappers;
 using System;
 using OneOf;
+using To_Do_List.Api.Models;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace To_Do_List.Api.Controllers;
 
@@ -18,19 +20,40 @@ public class TaskController : ControllerBase
         _taskService = taskService;
     }
 
-
     [HttpGet("tasks")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> GetTasks()
+    public async Task<IActionResult> GetTasks([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
+        if (page < 1 || pageSize < 1)
+        return BadRequest("Page and pageSize must be greater than 0.");
+
         var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value);
-        var tasks = await _taskService.GetAllTodoItemForUserAsync(userId);
-        var taskDtos = tasks.Select(TodoItemMapper.ToDto).ToList();
-        return Ok(taskDtos);
+
+        var (tasks,totalItems) = await _taskService.GetPagedTodoItemForUserAsync(userId,page, pageSize);
+        var taskDtos = tasks.Select(TodoItemMapper.FromEntityToResponseDto).ToList();
+        var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+        var response = new PagedResponse
+        {
+            TotalItems = totalItems,
+            TotalPages = totalPages,
+            CurrentPage = page,
+            PageSize = pageSize,
+            Items = taskDtos
+        };
+        return Ok(response);
     }
-
-
+    
+    /// <summary>
+    /// Obtiene una tarea especifica del usuario autenticado.
+    /// </summary>
+    /// <remarks>
+    /// Este endpoint devuelve una tarea asociada al usuario autenticado. 
+    /// remarks se usa para una descripcion mas detallada.
+    /// </remarks>
+    /// <param name="id">Representa el identificador unicos del item.</param>
+    /// <returns>Un item.</returns>
     [HttpGet("task/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -43,7 +66,7 @@ public class TaskController : ControllerBase
             return NotFound("Entity no found.");
         if (task.UserId != userId)
             return Unauthorized();
-        return Ok(TodoItemMapper.ToDto(task));
+        return Ok(TodoItemMapper.FromEntityToResponseDto(task));
     }
 
 
@@ -51,14 +74,14 @@ public class TaskController : ControllerBase
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> CreateTask([FromBody] TodoItemDto taskDto)
+    public async Task<IActionResult> CreateTask([FromBody] TodoItemRequestDto taskDto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
         var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value);
-        var task = TodoItemMapper.ToEntity(taskDto, userId);
+        var task = TodoItemMapper.FromRequestDtoToEntity(taskDto, userId);
         await _taskService.AddTodoItemAsync(task);
-        return CreatedAtAction(nameof(GetTasks), TodoItemMapper.ToDto(task));
+        return CreatedAtAction(nameof(GetTasks), TodoItemMapper.FromEntityToResponseDto(task));
     }
 
 
@@ -67,7 +90,7 @@ public class TaskController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateTask([FromRoute]int id, [FromBody] TodoItemDto taskDto)
+    public async Task<IActionResult> UpdateTask([FromRoute]int id, [FromBody] TodoItemRequestDto taskDto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -78,11 +101,11 @@ public class TaskController : ControllerBase
             return NotFound("Entity no found.");
         if (taskentity.UserId != userId)
             return Unauthorized();
-        var task = TodoItemMapper.ToEntity(taskDto, userId);
+        var task = TodoItemMapper.FromRequestDtoToEntity(taskDto, userId);
         var result = await _taskService.UpdateTodoItemAsync(id, task);
 
         return result.Match<IActionResult>(
-            task => Ok(TodoItemMapper.ToDto(task)),
+            task => Ok(TodoItemMapper.FromEntityToResponseDto(task)),
             error => NotFound("Entity no found.")
         );
 
