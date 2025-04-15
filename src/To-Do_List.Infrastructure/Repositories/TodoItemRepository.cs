@@ -35,17 +35,15 @@ public class TodoItemRepository : ITodoItemRepository
 
     public async Task<(IEnumerable<TodoItem>,int)> GetPagedTodoItemForUserAsync(int idUser, int page, int pageSize)
     {
-        var totalItemsTask = _todoItems.CountAsync(x => x.UserId == idUser);
+        var totalItems = await _todoItems.CountAsync(x => x.UserId == idUser);
 
-        var itemsTask = _todoItems
+        var items = await _todoItems
             .Where(x => x.UserId == idUser)
             .OrderBy(x => x.CreatedDate)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
 
-        var totalItems = await totalItemsTask;
-        var items = await itemsTask;
         return (items, totalItems);
     }
 

@@ -31,7 +31,7 @@ builder.Services.AddSwaggerGen(
     c =>
     {   
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "To-Do List API", Version = "v1" });
-        // c.EnableAnnotations();
+        c.EnableAnnotations();
         // Configurar la seguridad de JWT Bearer
         c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {

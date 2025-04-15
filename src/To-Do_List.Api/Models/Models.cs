@@ -33,7 +33,7 @@ public class ResponseLogin
 /// <summary>
 /// Representa la respuesta paginada de tareas.
 /// </summary>
-public class PagedResponse
+public class PagedResponse<T>
 {
     /// <summary>
     /// Número total de elementos.
@@ -58,6 +58,6 @@ public class PagedResponse
     /// <summary>
     /// Lista de elementos en la página actual.
     /// </summary>
-    public IEnumerable<TodoItemResponseDto> Items { get; set; }
+    public IEnumerable<T> Items { get; set; }
 }
 

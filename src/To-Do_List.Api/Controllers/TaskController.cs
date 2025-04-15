@@ -21,8 +21,15 @@ public class TaskController : ControllerBase
     }
 
     [HttpGet("tasks")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResponse<TodoItemResponseDto>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [SwaggerOperation(
+        Summary = "Obtiene una lista paginada de tareas del usuario autenticado.",
+        Description = "Este endpoint devuelve una lista de tareas asociadas al usuario autenticado, con soporte para paginación."
+    )]
+    [SwaggerResponse(StatusCodes.Status200OK, "Lista paginada de tareas.", typeof(PagedResponse<TodoItemResponseDto>))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Los parámetros de paginación no son válidos.")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "El usuario no está autenticado.")]
     public async Task<IActionResult> GetTasks([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
         if (page < 1 || pageSize < 1)
@@ -34,7 +41,7 @@ public class TaskController : ControllerBase
         var taskDtos = tasks.Select(TodoItemMapper.FromEntityToResponseDto).ToList();
         var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
-        var response = new PagedResponse
+        var response = new PagedResponse<TodoItemResponseDto>
         {
             TotalItems = totalItems,
             TotalPages = totalPages,
