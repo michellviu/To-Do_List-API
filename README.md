@@ -136,4 +136,8 @@ Se devuelve las tareas planificadas por ese usuario usando paginacion, ademas se
 }
 '''
 
+Para agregar una nueva migracion desde la raiz del proyecto To-Do-List.Infrastructure ejecutar los
+comandos:
 
+- dotnet ef migrations add MigrationName --startup-project ../To-Do_List.Api --context AppDBContext
+- dotnet ef database update --startup-project ../To-Do_List.Api --context AppDBContext

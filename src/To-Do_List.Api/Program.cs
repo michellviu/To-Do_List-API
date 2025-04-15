@@ -1,7 +1,9 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using To_Do_List.Infrastructure.Persistence.Context;
 using To_Do_List.Infrastructure.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Configure the database context
 builder.Services.AddDbContext<AppDBContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
-    new MySqlServerVersion(new Version(8,0,33))));
+    new MySqlServerVersion(new Version(8, 0, 33))));
 
 
 builder.Services.AddControllersWithViews();
@@ -27,9 +29,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
     c =>
-    {
+    {   
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "To-Do List API", Version = "v1" });
-
+        c.EnableAnnotations();
         // Configurar la seguridad de JWT Bearer
         c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
@@ -41,19 +43,23 @@ builder.Services.AddSwaggerGen(
         });
 
         c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
+       {
             {
-                Reference = new OpenApiReference
+                new OpenApiSecurityScheme
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new string[] {}
-        }
-    });
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                new string[] {}
+            }
+        });
+
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        c.IncludeXmlComments(xmlPath);
     });
 
 var app = builder.Build();
